@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Avancement Projet</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,500;0,9..40,700;1,9..40,300&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --bg: transparent;
+    --card-bg: #FFFFFF;
+    --text-primary: #1A1A1A;
+    --text-secondary: #6B6B6B;
+    --text-muted: #A0A0A0;
+    --border: #E8E8E6;
+    --done: #2D9F6F;
+    --progress: #3B82F6;
+    --review: #F59E0B;
+    --todo: #E2E2DF;
+    --done-light: #ECFDF5;
+    --progress-light: #EFF6FF;
+    --review-light: #FFFBEB;
+    --todo-light: #F5F5F4;
+  }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 16px;
+  }
+  .widget {
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 32px;
+    max-width: 500px;
+    width: 100%;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.06);
+    border: 1px solid var(--border);
+  }
+  .widget-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 28px;
+  }
+  .widget-title {
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--text-muted);
+  }
+  .project-name {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-top: 2px;
+    letter-spacing: 0.3px;
+  }
+  .widget-badge {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 12px;
+    border-radius: 100px;
+    white-space: nowrap;
+  }
+  .main-content {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+  }
+  .ring-container {
+    position: relative;
+    width: 170px;
+    height: 170px;
+    flex-shrink: 0;
+  }
+  .ring-svg {
+    width: 170px;
+    height: 170px;
+    transform: rotate(-90deg);
+  }
+  .ring-bg { fill: none; stroke: var(--todo); stroke-width: 20; opacity: 0.4; }
+  .ring-segment {
+    fill: none;
+    stroke-width: 20;
+    stroke-linecap: round;
+    transition: stroke-dasharray 1.4s cubic-bezier(0.4, 0, 0.2, 1),
+                stroke-dashoffset 1.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .ring-center {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 170px;
+    height: 170px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  .ring-percent {
+    font-size: 40px;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--text-primary);
+    letter-spacing: -2px;
+  }
+  .ring-percent span { font-size: 18px; font-weight: 500; color: var(--text-muted); letter-spacing: 0; }
+  .ring-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 4px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+  .stats-column { display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 0; }
+  .stat-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    transition: background 0.2s ease;
+  }
+  .stat-row:hover { background: var(--todo-light); }
+  .stat-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .stat-name { font-size: 13px; color: var(--text-secondary); font-weight: 500; flex: 1; }
+  .stat-count { font-size: 18px; font-weight: 700; color: var(--text-primary); min-width: 28px; text-align: right; }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .widget { animation: fadeInUp 0.5s ease-out; }
+  .stat-row:nth-child(1) { animation: fadeInUp 0.4s ease-out 0.15s both; }
+  .stat-row:nth-child(2) { animation: fadeInUp 0.4s ease-out 0.25s both; }
+  .stat-row:nth-child(3) { animation: fadeInUp 0.4s ease-out 0.35s both; }
+  .ring-center { animation: countUp 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.2s both; }
+  @keyframes countUp {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @media (max-width: 460px) {
+    .main-content { flex-direction: column; gap: 20px; }
+    .widget { padding: 24px; }
+  }
+</style>
+</head>
+<body>
+<div class="widget">
+  <div class="widget-header">
+    <div>
+      <div class="widget-title">Avancement projet</div>
+      <div class="project-name" id="project-name"></div>
+    </div>
+    <div class="widget-badge" id="badge"></div>
+  </div>
+  <div class="main-content">
+    <div class="ring-container">
+      <svg class="ring-svg" viewBox="0 0 170 170">
+        <circle class="ring-bg" cx="85" cy="85" r="65" />
+        <circle class="ring-segment" id="seg-todo" cx="85" cy="85" r="65" stroke="var(--todo)" />
+
+        <circle class="ring-segment" id="seg-progress" cx="85" cy="85" r="65" stroke="var(--progress)" />
+        <circle class="ring-segment" id="seg-done" cx="85" cy="85" r="65" stroke="var(--done)" />
+      </svg>
+      <div class="ring-center">
+        <div class="ring-percent" id="total-percent">0<span>%</span></div>
+        <div class="ring-label">complété</div>
+      </div>
+    </div>
+    <div class="stats-column">
+      <div class="stat-row">
+        <div class="stat-dot" style="background: var(--done);"></div>
+        <div class="stat-name">Terminé</div>
+        <div class="stat-count" id="val-done">0</div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-dot" style="background: var(--progress);"></div>
+        <div class="stat-name">En cours</div>
+        <div class="stat-count" id="val-progress">0</div>
+      </div>
+
+      <div class="stat-row">
+        <div class="stat-dot" style="background: var(--todo);"></div>
+        <div class="stat-name">À faire</div>
+        <div class="stat-count" id="val-todo">0</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const DATA = {
+    done:       parseInt(params.get('done'))     || 0,
+    inProgress: parseInt(params.get('progress')) || 0,
+    todo:       parseInt(params.get('todo'))      || 0
+  };
+  const projectName = params.get('project') || '';
+  const hasParams = params.has('done') || params.has('progress') || params.has('todo');
+  if (!hasParams) { DATA.done = 8; DATA.inProgress = 3; DATA.todo = 9; }
+
+  const total = DATA.done + DATA.inProgress + DATA.todo;
+  const R = 65;
+  const circumference = 2 * Math.PI * R;
+  const gap = 4;
+
+  const nameEl = document.getElementById('project-name');
+  if (projectName) { nameEl.textContent = projectName; } else { nameEl.style.display = 'none'; }
+
+  function setSegment(id, count, offsetPct) {
+    const el = document.getElementById(id);
+    if (count === 0) { el.style.strokeDasharray = '0 ' + circumference; return; }
+    const dash = Math.max((count / total) * circumference - gap, 1);
+    el.style.strokeDasharray = dash + ' ' + circumference;
+    el.style.strokeDashoffset = (-(offsetPct / 100) * circumference - gap / 2);
+  }
+
+  const donePct = (DATA.done / total) * 100;
+  const progressPct = (DATA.inProgress / total) * 100;
+
+  setTimeout(function() {
+    setSegment('seg-done', DATA.done, 0);
+    setSegment('seg-progress', DATA.inProgress, donePct);
+    setSegment('seg-todo', DATA.todo, donePct + progressPct);
+  }, 150);
+
+  const completionPct = total > 0 ? Math.round((DATA.done / total) * 100) : 0;
+  const counterEl = document.getElementById('total-percent');
+  let current = 0;
+  function animateCounter() {
+    if (current < completionPct) {
+      current += Math.max(1, Math.floor(completionPct / 35));
+      if (current > completionPct) current = completionPct;
+      counterEl.innerHTML = current + '<span>%</span>';
+      requestAnimationFrame(animateCounter);
+    }
+  }
+  setTimeout(animateCounter, 500);
+
+  document.getElementById('val-done').textContent = DATA.done;
+  document.getElementById('val-progress').textContent = DATA.inProgress;
+  document.getElementById('val-todo').textContent = DATA.todo;
+
+  const badge = document.getElementById('badge');
+  if (completionPct === 100) {
+    badge.textContent = '✅ Terminé'; badge.style.cssText = 'color:var(--done);background:var(--done-light);';
+  } else if (completionPct >= 75) {
+    badge.textContent = '🏁 Bientôt fini'; badge.style.cssText = 'color:var(--progress);background:var(--progress-light);';
+  } else if (completionPct > 0) {
+    badge.textContent = '⚡ En cours'; badge.style.cssText = 'color:var(--review);background:var(--review-light);';
+  } else {
+    badge.textContent = '⏳ Pas démarré'; badge.style.cssText = 'color:var(--text-muted);background:var(--todo-light);';
+  }
+</script>
+</body>
+</html>
